@@ -1,6 +1,7 @@
 import app from "./server.js"
 import mongodb from "mongodb"
 import dotenv from "dotenv"
+import RestaurantsDAO from "./dao/restaurantsDAO.js"
 
 dotenv.config()
 
@@ -37,6 +38,7 @@ MongoClient.connect(
 
     console.log("Connected to MongoDB successfully")
 
+    await RestaurantsDAO.injectDB(client)
     app.listen(port, () => {
         console.log(`Listening on port ${port}`)
     })
