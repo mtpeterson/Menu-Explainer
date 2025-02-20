@@ -1,45 +1,58 @@
-import app from "./server.js"
-import mongodb from "mongodb"
-import dotenv from "dotenv"
-import RestaurantsDAO from "./dao/restaurantsDAO.js"
+import app from "./server.js";
+import mongodb from "mongodb";
+import dotenv from "dotenv";
+import RestaurantsDAO from "./dao/restaurantsDAO.js";
+import ReviewsDAO from "./dao/reviewsDAO.js";
 
-dotenv.config()
+dotenv.config();
 
-console.log("Starting script...")
+const MongoClient = mongodb.MongoClient;
+const port = process.env.PORT || 8000;
 
-const MongoClient = mongodb.MongoClient
-const port = process.env.PORT || 8000
-const dbUri = process.env.MENUEXPLAINER_DB_URI
-
-if (!dbUri) {
-    console.error("MENUEXPLAINER_DB_URI is not set!")
-    process.exit(1)
-}
-
-console.log(`Attempting to connect to MongoDB at ${dbUri}`)
+console.log("Starting MongoDB connection...");
 
 MongoClient.connect(
-    dbUri,
-    {
-        maxPoolSize: 50,
-        wtimeoutMS: 2500,
-        useNewUrlParser: true
-    }
+  process.env.MONGODB_URI,
+  {
+    maxPoolSize: 50,
+    wtimeoutMS: 2500,
+  }
 )
 .catch(err => {
-    console.error("MongoDB Connection Error:", err.stack)
-    process.exit(1)
+  console.error("MongoDB Connection Error:", err.stack);
+  process.exit(1);
 })
 .then(async client => {
-    if (!client) {
-        console.error("MongoDB client is null!")
-        process.exit(1)
-    }
+  if (!client) {
+    console.error("MongoDB client is undefined");
+    process.exit(1);
+  }
+  console.log("Connected to MongoDB successfully");
+  console.log("Calling injectDB methods");
+  await RestaurantsDAO.injectDB(client);
+  await ReviewsDAO.injectDB(client);
+  console.log("injectDB methods called");
 
-    console.log("Connected to MongoDB successfully")
+  const server = app.listen(port, () => {
+    console.log(`Listening on port ${port}`);
+  });
 
-    await RestaurantsDAO.injectDB(client)
-    app.listen(port, () => {
-        console.log(`Listening on port ${port}`)
-    })
+  // Handle termination signals to close the server gracefully
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    server.close(() => {
+      console.log('HTTP server closed');
+    });
+  });
+
+  process.on('SIGINT', () => {
+    console.log('SIGINT signal received: closing HTTP server');
+    server.close(() => {
+      console.log('HTTP server closed');
+    });
+  });
 })
+.catch(err => {
+  console.error("Error in .then block:", err.stack);
+  process.exit(1);
+});
