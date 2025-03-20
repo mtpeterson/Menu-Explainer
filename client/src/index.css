@@ -25,13 +25,23 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
   min-width: 320px;
   min-height: 100vh;
 }
 
+.app-header {
+  width: 100%;
+  text-align: center;
+  padding: 20px 0;
+  top: 0;
+}
+
 h1 {
-  font-size: 3.2em;
+  margin: 0;
+  font-size: 2rem;
   line-height: 1.1;
 }
 

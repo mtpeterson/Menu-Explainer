@@ -1,55 +1,52 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const [message, setMessage] = useState("Loading...");
+  const [image, setImage] = useState(null);
 
-  useEffect(() => {
-    fetch("http://localhost:5001/")
-      .then((res) => res.text())
-      .then((data) => setMessage(data))
-      .catch((err) => setMessage("Error connecting to server"));
-  }, []);
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    setImage(file);
+    console.log("Selected file:", file);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!image) {
+      alert("Please select an image to upload.");
+      return;
+    }
+
+    console.log("Image ready to be sent to the backend:", image);
+    alert("Image upload functionality will be implemented later.");
+  };
 
   return (
-    <div>
-      <h1>Menu Explainer</h1>
-      <p>Backend says: {message}</p>
-    </div>
+    <>
+      <header className="app-header">
+        <h1>Home Page</h1>
+      </header>
+      <div className="container mt-5">
+        <form onSubmit={handleSubmit} className="d-flex align-items-center mt-4">
+          <div className="me-3">
+            <label htmlFor="imageUpload" className="form-label visually-hidden">
+              Upload an Image
+            </label>
+            <input
+              type="file"
+              className="form-control"
+              id="imageUpload"
+              accept="image/*"
+              onChange={handleImageUpload}
+            />
+          </div>
+          <button type="submit" className="btn btn-primary">
+            Upload
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
 
 export default App;
-
-// function App() {
-//   const [count, setCount] = useState(0)
-
-//   return (
-//     <>
-//       <div>
-//         <a href="https://vite.dev" target="_blank">
-//           <img src={viteLogo} className="logo" alt="Vite logo" />
-//         </a>
-//         <a href="https://react.dev" target="_blank">
-//           <img src={reactLogo} className="logo react" alt="React logo" />
-//         </a>
-//       </div>
-//       <h1>Vite + React</h1>
-//       <div className="card">
-//         <button onClick={() => setCount((count) => count + 1)}>
-//           count is {count}
-//         </button>
-//         <p>
-//           Edit <code>src/App.jsx</code> and save to test HMR
-//         </p>
-//       </div>
-//       <p className="read-the-docs">
-//         Click on the Vite and React logos to learn more
-//       </p>
-//     </>
-//   )
-// }
-
-// export default App
