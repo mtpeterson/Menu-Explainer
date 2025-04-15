@@ -1,0 +1,49 @@
+/* Style the navbar container */
+.navbar {
+  position: fixed; /* Fix the navbar at the top of the page */
+  top: 0;
+  left: 0;
+  width: 100%; /* Make it span the full width of the page */
+  background-color: var(--color-primary, #646cff); /* Use a primary color or fallback */
+  color: var(--color-surface, #ffffff); /* Use a surface color or fallback */
+  padding: 1rem; /* Add some padding for spacing */
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space out the title and links */
+  align-items: center; /* Center items vertically */
+  z-index: 1000; /* Ensure it stays above other elements */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+}
+
+/* Style the navbar title */
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Style the navbar links */
+.navbar-links {
+  list-style: none; /* Remove default list styling */
+  display: flex; /* Use flexbox for horizontal layout */
+  gap: 1rem; /* Add spacing between links */
+  margin: 0;
+  padding: 0;
+}
+
+/* Style individual links */
+.navbar-links a {
+  text-decoration: none; /* Remove underline */
+  color: var(--color-surface, #ffffff); /* Use surface color or fallback */
+  font-weight: 500;
+  transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+/* Hover effect for links */
+.navbar-links a:hover {
+  color: var(--color-secondary, #ff6f61); /* Use a secondary color or fallback */
+}
+
+/* Add padding to the body or main container */
+body {
+  padding-top: 4rem; /* Adjust based on the height of your navbar */
+}

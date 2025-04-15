@@ -11,6 +11,28 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Primary Colors */
+  --color-primary: #646cff;
+  --color-primary-hover: #535bf2;
+
+  /* Secondary Colors */
+  --color-secondary: #ff6f61;
+  --color-secondary-hover: #e65c50;
+
+  /* Neutral Colors */
+  --color-background: #242424;
+  --color-surface: #ffffff;
+  --color-text: rgba(255, 255, 255, 0.87);
+  --color-text-muted: rgba(255, 255, 255, 0.6);
+
+  /* Accent Colors */
+  --color-accent: #f4b400;
+  --color-accent-hover: #e09e00;
+
+  /* Error Colors */
+  --color-error: #d32f2f;
+  --color-error-hover: #b71c1c;
 }
 
 a {

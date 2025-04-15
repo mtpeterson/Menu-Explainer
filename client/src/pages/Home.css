@@ -1,0 +1,55 @@
+/* Full-page container */
+.splash-container {
+  height: 100vh; /* Full viewport height */
+  width: 100%;
+  background: linear-gradient(
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.5)
+    ), /* Add a dark overlay */
+    url('/images/background1.jpg') center/cover no-repeat; /* Replace with your image path */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff; /* White text for contrast */
+  text-align: center;
+}
+
+/* Content wrapper */
+.splash-content {
+  max-width: 600px;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Title styling */
+.splash-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Description styling */
+.splash-description {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Button styling */
+.splash-button {
+  background-color: var(--color-primary, #646cff); /* Use primary color or fallback */
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.splash-button:hover {
+  background-color: var(--color-primary-hover, #535bf2); /* Use hover color or fallback */
+}
