@@ -35,37 +35,42 @@ const MenuSection: React.FC<MenuSectionProps> = ({ section }) => {
                     id={`collapse-${safeSectionId}`}
                     className="accordion-collapse collapse"
                     aria-labelledby={`heading-${safeSectionId}`}
-                    data-bs-parent={`#accordion-${safeSectionId}`}
+                    data-bs-parent={`#custom-section-accordion-${safeSectionId}`}
                 >
                     {/* Inner accordion for items */}
-                    <div className="accordion-body">
-                        <div className="accordion" id={`accordion-${safeSectionId}-items`}>
+                    <div className="custom-items-accordion-body">
+                        <div className="custom-items-accordion" id={`custom-items-accordion-${safeSectionId}-items`}>
                             {section.items.map((item, index) => (
-                                <div className="accordion-item" key={index}>
-                                    <h2 className="accordion-header" id={`heading-${safeSectionId}-${index}`}>
+                                <div className="custom-items-accordion-item" key={index}>
+                                    <h2 className="custom-items-accordion-header" id={`heading-${safeSectionId}-${index}`}>
                                         <button
-                                            className="accordion-button collapsed"
+                                            className="custom-items-accordion-button"
                                             type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target={`#collapse-${safeSectionId}-${index}`}
-                                            aria-expanded="false"
+                                            aria-expanded="true"
                                             aria-controls={`collapse-${safeSectionId}-${index}`}
                                         >
-                                            {item.name}
+                                            <div className="item-container">
+                                                <span>{item.name}</span>
+                                                <span className="item-price">
+                                                    {item.price !== null ? `$${item.price.toFixed(2)}` : ""}
+                                                </span>
+                                            </div>
                                         </button>
                                     </h2>
                                     <div
                                         id={`collapse-${safeSectionId}-${index}`}
-                                        className="accordion-collapse collapse"
+                                        className="accordion-collapse collapse show"
                                         aria-labelledby={`heading-${safeSectionId}-${index}`}
                                     >
-                                        <div className="accordion-body">
+                                        <div className="custom-items-accordion-body">
                                             <p>{item.description}</p>
-                                            <p>
+                                            {/* <p>
                                                 {item.price !== null
                                                     ? `$${item.price.toFixed(2)}`
                                                     : "Price not available"}
-                                            </p>
+                                            </p> */}
                                         </div>
                                     </div>
                                 </div>

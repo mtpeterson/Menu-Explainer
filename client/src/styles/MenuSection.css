@@ -29,3 +29,80 @@
 .custom-section-accordion .custom-section-accordion-header {
     margin-bottom: 1rem;
 }
+
+
+/* Styles for the inner accordion which displays menu items */
+.custom-items-accordion {
+    all: unset;
+    display: block;
+    max-width: 95%;           /* smaller than section */
+    box-sizing: border-box;   /* padding stays *inside* width */
+    margin: 0 auto 1rem auto; /* center the box */
+    padding: 1rem;            /* slightly smaller padding */
+    text-align: center;
+    font-size: 1rem;        /* smaller than section */
+    font-weight: 700;
+    color: #333;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.custom-items-accordion-header:hover {
+    background-color: #e0e0e0;
+}
+
+/* For the button inside the header of the item accordion */
+.custom-items-accordion-button {
+    all: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;  /* Prevent overflow from padding */
+    padding: 1.25rem 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 8px;
+    overflow: hidden;        /* Prevent hover background leak */
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.custom-items-accordion-button:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-1px);
+}
+
+.custom-items-accordion-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(100, 100, 255, 0.4);
+}
+
+.custom-items-accordion-header {
+    border-radius: 8px;
+    overflow: hidden; /* clip child hover effects */
+}
+
+.custom-items-accordion-header {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+/* Styles for the menu items */
+
+.item-container {
+    display: flex;
+    justify-content: space-between; /* Push name and price to opposite ends */
+    gap: 1rem; /* Add space between the two */
+}
+
+.item-price {
+    color: #333; /* Optional: Style the price */
+}
