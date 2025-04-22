@@ -16,24 +16,67 @@ async function getProjectId() {
 export default class UploadsCtrl {
     static async apiUploadImage(req, res, next) {
         try {
+            console.log("Received request to upload image...");
+            // Check if a file was uploaded
             if (!req.file) {
+                console.log("No file uploaded. Returning 400 response.");
                 return res.status(400).json({ error: "No file uploaded" });
             }
 
+            // Check if the file is an image
+            if (!req.file.mimetype.startsWith("image/")) {
+                console.log("Uploaded file is not an image. Returning 415 response.");
+                return res.status(415).json({ error: "The uploaded file is not a valid image." });
+            }
+
             // Step 1: Extract text from the image using Google Vision API
-            const extractedText = await extractTextFromImage(req.file.buffer);
+            const result = await extractTextFromImage(req.file.buffer);
+
+            // Check if it's probably a menu
+            const isMenu = result.labels.some(label => label.description.toLowerCase().includes("menu"));
+
+            if (!isMenu) {
+                console.log("The uploaded image is not a restaurant menu. Returning 422 response.");
+                return res.status(422).json({ error: "The uploaded image does not seem to be a restaurant menu." });
+            }
+
+            // // Check for inappropriate content
+            // const isSafe = Object.values(result.safeSearch).every(
+            //     likelihood => ["VERY_UNLIKELY", "UNLIKELY"].includes(likelihood)
+            // );
+
+            // if (!isSafe) {
+            //     return res.status(422).json({ error: "The uploaded image contains potentially unsafe material." });
+            // }
+
+            console.log("Starting image processing...");
+
+            const extractedText = result.text;
+            console.log("Extracted text:", extractedText);
 
             if (!extractedText) {
-                return res.status(200).json({ message: "No text found in the image" });
+                console.log("No text found in the image. Returning 422 response.");
+                return res.status(422).json({ message: "No text found in the image" });
             }
+
+            console.log("Text found. Proceeding to structure the extracted text...");
 
             // Step 2: Structure the extracted text using Vertex AI
             const structuredText = await structureTextWithVertexAI(extractedText);
+            // const structuredText = "";
+            console.log("Structured text:", structuredText);
             
+            console.log("Proceeding to enrich the structured text...");
+
             // Step 3: Enrich the structured text using Vertex AI
             const enrichedText = await enrichTextWithVertexAI(structuredText);
+            // const enrichedText = {
+            //     sections: [],
+            // };
+            console.log("Enriched text:", enrichedText);
 
             // Respond with the final enriched text
+            console.log("Image processed successfully. Sending response...");
             res.status(200).json({
                 message: "Image processed successfully",
                 extractedText,
@@ -41,7 +84,7 @@ export default class UploadsCtrl {
                 enrichedText,
             });
         } catch (e) {
-            console.error(`Error processing image: ${e}`);
+            console.error("Error processing image:", e);
             res.status(500).json({ error: "Failed to process image" });
         }
     }
@@ -49,20 +92,53 @@ export default class UploadsCtrl {
 
 // Helper function: Extract text from image using Google Vision API
 async function extractTextFromImage(imageBuffer) {
-    // Check if testing mode is enabled
     if (process.env.USE_DUMMY_DATA === "true") {
         console.log("Using dummy data for text extraction.");
-        return "$10.99\nPO-BOYS &\nBURGERS\nServed with Fries or one southern side\n1. Southern Single Burger $8.99\nBeef Patty, Lettuce, tomate, mayonnaise, onion, mustard,\n& pickle\n2. Southern Double Burger $10.49\nTwo Patties, Lettuce, tomato, mayonnaise, onion, mustard,\n& pickle.\n3. Philly Cheese\nSteak Sandwich\nBeef, grilled onions, peppers, swiss cheese & mayonnaise.\nSALADS\nServed with choice of dressings\n10. Green Salads\n11. Fried or Grilled\nShrimp Salad\n12. Fried or Grilled\n15.99\n$12.99\nF: Fried\nSEAFOOD\nServed with two southern side\nG: GRilled\n$12.99\nFish Salad\n13. Chicken Salad\n$12.99\nAll Salads served with lettuce, tomato, pickle\ncucumbers, & onions\n14. (4) Piece Fish\nF/G S\n15. (6) Piece Fish\nF/G S\n16. Tilapia Platter\nF/G S\nPhilly Cheese\n$10.99\nChicken Sandwich\nChicken, grilled onions, peppers, swiss cheese & mayonnaise.\n5. Chicken Po' Boy\n$10.99\nChicken, Lettuce, onions, tomato, pickle, Salt & Pepper.\n6. Oyster Po' Boy\n$10.99\n4 Oyster, Sam's sauce, Lettuce, tomato, pickle, Salt & Pepper\n7. Shrimp Po' Boy\n$10.99\n5 Jumbo Shrimp. Sam's sauce, Lettuce, onions, tomato,\npickle, Salt & Pepper\n8. Fish Po Boy\n$10,99\n2 Fish fillet, Sam's sauce, Lettuce, onions, tomato, pickle, Salt\n& Pepper\n9. Crawfish Po Boy\n$10.99\nCrewfish, Sam's sauce, Lettuce, onions, pickle, Salt & Pepper.\nDRINKS $2.49\nCoke, Sprite, Diet Coke, Dr Pepper,\nOrange Fanta, Fruit Punch, Chery Coke,\nlemonade, Sweet/Unsweetened Tea.\nSams Coffee\n$2.49\nGUMBO\nServed with Rice and Dinner Roll\n$9.99\nSIDES:\nFries, Hush Puppies,\nGreen Beans, Red Beans & Rice,\nColeslaw, Salad.\n17. 1 Fish/6 Shrimp .F/G S\n18.2 Fish/6 Shrimp .F/G $\n19. 6 Jumbo Shrimp.......F/G\n20. 8 Jumbo Shrimp F/G S\n21. 12 Jumbo Shrimp F/G $\n22. Sam's Special F/G";
+        return {
+            text: "$10.99\nPO-BOYS &\nBURGERS\nServed with Fries or one southern side\n1. Southern Single Burger $8.99\nBeef Patty, Lettuce, tomate, mayonnaise, onion, mustard,\n& pickle\n2. Southern Double Burger $10.49\nTwo Patties, Lettuce, tomato, mayonnaise, onion, mustard,\n& pickle.\n3. Philly Cheese\nSteak Sandwich\nBeef, grilled onions, peppers, swiss cheese & mayonnaise.\nSALADS\nServed with choice of dressings\n10. Green Salads\n11. Fried or Grilled\nShrimp Salad\n12. Fried or Grilled\n15.99\n$12.99\nF: Fried\nSEAFOOD\nServed with two southern side\nG: GRilled\n$12.99\nFish Salad\n13. Chicken Salad\n$12.99\nAll Salads served with lettuce, tomato, pickle\ncucumbers, & onions\n14. (4) Piece Fish\nF/G S\n15. (6) Piece Fish\nF/G S\n16. Tilapia Platter\nF/G S\nPhilly Cheese\n$10.99\nChicken Sandwich\nChicken, grilled onions, peppers, swiss cheese & mayonnaise.\n5. Chicken Po' Boy\n$10.99\nChicken, Lettuce, onions, tomato, pickle, Salt & Pepper.\n6. Oyster Po' Boy\n$10.99\n4 Oyster, Sam's sauce, Lettuce, tomato, pickle, Salt & Pepper\n7. Shrimp Po' Boy\n$10.99\n5 Jumbo Shrimp. Sam's sauce, Lettuce, onions, tomato,\npickle, Salt & Pepper\n8. Fish Po Boy\n$10,99\n2 Fish fillet, Sam's sauce, Lettuce, onions, tomato, pickle, Salt\n& Pepper\n9. Crawfish Po Boy\n$10.99\nCrewfish, Sam's sauce, Lettuce, onions, pickle, Salt & Pepper.\nDRINKS $2.49\nCoke, Sprite, Diet Coke, Dr Pepper,\nOrange Fanta, Fruit Punch, Chery Coke,\nlemonade, Sweet/Unsweetened Tea.\nSams Coffee\n$2.49\nGUMBO\nServed with Rice and Dinner Roll\n$9.99\nSIDES:\nFries, Hush Puppies,\nGreen Beans, Red Beans & Rice,\nColeslaw, Salad.\n17. 1 Fish/6 Shrimp .F/G S\n18.2 Fish/6 Shrimp .F/G $\n19. 6 Jumbo Shrimp.......F/G\n20. 8 Jumbo Shrimp F/G S\n21. 12 Jumbo Shrimp F/G $\n22. Sam's Special F/G",
+            labels: ["Menu", "Restaurant", "Food", "Sandwich", "Lunch"],
+            safeSearch: {
+                adult: "VERY_UNLIKELY",
+                medical: "UNLIKELY",
+                spoof: "UNLIKELY",
+                violence: "VERY_UNLIKELY",
+                racy: "UNLIKELY"
+            }
+        };
     }
 
-    // If not in testing mode, call the Vision API
     const client = new vision.ImageAnnotatorClient();
 
-    const [result] = await client.textDetection({ image: { content: imageBuffer } });
-    const detections = result.textAnnotations;
+    // Run all detections
+    const [textResult] = await client.textDetection({ image: { content: imageBuffer } });
+    const [labelResult] = await client.labelDetection({ image: { content: imageBuffer } });
+    const [safeSearchResult] = await client.safeSearchDetection({ image: { content: imageBuffer } });
 
-    return detections.length > 0 ? detections[0].description : null;
+    console.log("Label annotations: ", labelResult.labelAnnotations)
+
+    // Extract and filter labels based on confidence score
+    const labels = labelResult.labelAnnotations
+        .filter(label => label.score > 0.65)
+        .map(label => ({
+            description: label.description,
+            score: label.score
+        }));
+
+    console.log("Labels:", labels);
+
+    // Get SafeSearch data
+    const safeSearch = safeSearchResult.safeSearchAnnotation;
+
+    const detections = textResult.textAnnotations;
+    const extractedText = detections.length > 0 ? detections[0].description : null;
+
+    return {
+        text: extractedText,
+        labels,
+        safeSearch
+    };
 }
+
 
 // Helper function: Structure text using Vertex AI
 async function structureTextWithVertexAI(extractedText) {
@@ -399,7 +475,7 @@ async function enrichTextWithVertexAI(structuredText) {
     const vertexAi = new VertexAI({ project: `${projectId}`, location: `${location}` });
     const model = vertexAi.preview.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-    const prompt = `The following is a structured json of items on a restaurant menu. For any item that is not self-explanatory and/or does not contain a description, write a brief description of what the item likely is. If the item is self-explanatory (e.g., "Cheeseburger", "French Fries", or "Coke"), no description is needed.
+    const prompt = `The following is a structured json of items on a restaurant menu. Create descriptions for each item. If the existing description is enough, you can just keep the old description. If the description does not explain it well enough for someone who hasn't had the food before, enhance or generate a new description. For items that could be prepared in different ways, give your best guess as to the likely options (i.e. "often served over rice" or "likely with a citrus glaze"). If you added to the description, set 'edited' to true. Otherwise, it should be false.
 
     Example JSON structure:
     {
@@ -411,9 +487,21 @@ async function enrichTextWithVertexAI(structuredText) {
                         "name": "Spring Rolls",
                         "description": "Crispy rolls filled with vegetables, often composed of shredded cabbage, carrots, and other vegetables wrapped in thin pastry sheets and fried",
                         "price": 5.99
+                        "enhanced": true
                     }
                 ]
-            }
+            },
+            {
+                "section_name": "Main Courses",
+                "items": [
+                    {
+                        "name": "8oz Filet",
+                        "description": "Filet mignon is a tender, lean cut of beef taken from the smaller end of the tenderloin, known for its buttery texture and mild flavor",
+                        "price": 15.99,
+                        "enhanced": true
+                    }
+                ]
+}
         ]
     }
 

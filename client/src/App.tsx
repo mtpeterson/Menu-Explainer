@@ -5,7 +5,8 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Upload from './pages/Upload';
 import Result from './pages/Result';
-import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Navbar from './components/Navbar';
 import './styles/index.css'; // Import global styles
 import './styles/App.css'; // Import App-specific styles

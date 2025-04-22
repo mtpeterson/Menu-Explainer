@@ -1,16 +1,33 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { ResponseData } from '../types';
+import MenuSection from "../components/MenuSection";
+import "../styles/Result.css";
 
 const Result: React.FC = () => {
     const location = useLocation();
     const { responseData } = location.state as { responseData: ResponseData };
 
     return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-            <h1>Processing Complete</h1>
-            {responseData.enrichedText.sections.map((section, index) => (
-                <div key={index}>
+        <div className="result-container">
+            {responseData.enrichedText.sections.length === 0 ? (
+                <div className="no-results">
+                    <h2>No Results Found</h2>
+                    <p>Sorry, we couldn't find any relevant information.</p>
+                </div>
+            ) : (
+                responseData.enrichedText.sections.map((section, index) => (
+                    <MenuSection key={index} section={section} />
+                ))
+            )}
+        </div>
+    );
+};
+
+export default Result;
+
+
+{/* <div key={index}>
                     <h3>{section.section_name}</h3>
                     <ul>
                         {section.items.map((item, itemIndex) => (
@@ -19,10 +36,4 @@ const Result: React.FC = () => {
                             </li>
                         ))}
                     </ul>
-                </div>
-            ))}
-        </div>
-    );
-};
-
-export default Result;
+                </div> */}

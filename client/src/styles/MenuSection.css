@@ -1,0 +1,31 @@
+.custom-section-accordion .custom-section-accordion-button {
+    all: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1.5rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #333;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.custom-section-accordion .custom-section-accordion-button:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-1px);
+}
+
+.custom-section-accordion .custom-section-accordion-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(100, 100, 255, 0.4);
+}
+
+.custom-section-accordion .custom-section-accordion-header {
+    margin-bottom: 1rem;
+}

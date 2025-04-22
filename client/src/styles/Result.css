@@ -1,0 +1,7 @@
+.result-container {
+  width: 60vw; /* Keep the width as is */
+  padding: 2rem; /* Keep padding for internal spacing */
+  margin: 0 auto; /* Center horizontally */
+  position: relative; /* Default positioning */
+  top: 0; /* Ensure it starts at the top */
+}

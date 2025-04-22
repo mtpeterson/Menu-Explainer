@@ -38,8 +38,25 @@ const Upload: React.FC = () => {
                 console.log("File uploaded successfully:", data);
                 navigate("/result", { state: { responseData: data } }); // Navigate to Result page with response data
             } else {
-                console.error("Failed to upload file");
-                alert("Failed to upload file. Please try again.");
+                // Handle specific response codes
+                const errorData = await response.json();
+                switch (response.status) {
+                    case 400:
+                        alert(`Bad Request: ${errorData.error}`);
+                        break;
+                    case 415:
+                        alert(`Unsupported Media Type: ${errorData.error}`);
+                        break;
+                    case 422:
+                        alert(`Unprocessable Entity: ${errorData.error}`);
+                        break;
+                    case 500:
+                        alert(`Server Error: ${errorData.error}`);
+                        break;
+                    default:
+                        alert(`Unexpected Error: ${errorData.error}`);
+                }
+                console.error(`Error ${response.status}:`, errorData.error);
             }
         } catch (error) {
             console.error("Error uploading file:", error);

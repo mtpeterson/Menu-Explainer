@@ -2,7 +2,8 @@
 export interface MenuItem {
     name: string;
     description: string;
-    price: number;
+    price: number | null;
+    edited: boolean;
   }
   
   export interface MenuSection {
